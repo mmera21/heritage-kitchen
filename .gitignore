@@ -1,0 +1,16 @@
+# Dependencias instaladas localmente
+/vendor/
+
+# Configuración y secretos locales (si se agregan más adelante)
+/.env
+/config.local.php
+
+# Archivos temporales y de sistema
+*.log
+php_errors.log
+Thumbs.db
+.DS_Store
+
+# Archivos subidos por usuarios: se mantienen en el servidor, no en Git
+/uploads/*
+!/uploads/.gitkeep
