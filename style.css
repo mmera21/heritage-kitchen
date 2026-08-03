@@ -132,8 +132,8 @@ table {
     background: #fff; } 
     
 th, td { 
-    padding: .7rem; b
-    order-bottom: 1px solid #eadfd6; 
+    padding: .7rem;
+    border-bottom: 1px solid #eadfd6; 
     text-align: left; }
 
 th a { 
