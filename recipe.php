@@ -50,8 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         unset($_SESSION['captcha_code']);
+        $_SESSION['comment_message'] = 'Thank you. Your comment has been added.';
 
-        header('Location: ' . recipe_permalink($recipe_id, $recipe['slug']) . '?comment=posted');
+        header('Location: ' . recipe_permalink($recipe_id, $recipe['slug']));
         exit;
     }
 }
@@ -88,8 +89,8 @@ require 'header.php';
         <p class="eyebrow">Family memories</p>
         <h2 id="comments-heading">Comments</h2>
 
-        <?php if (isset($_GET['comment']) && $_GET['comment'] === 'posted'): ?>
-            <p class="notice">Thank you. Your comment has been added.</p>
+        <?php if (!empty($_SESSION['comment_message'])): ?>
+            <p class="notice"><?php echo e($_SESSION['comment_message']); unset($_SESSION['comment_message']); ?></p>
         <?php endif; ?>
 
         <?php if ($comments): ?>
