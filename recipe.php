@@ -66,6 +66,15 @@ $statement = $db->prepare(
 $statement->execute(['recipe_id' => $recipe_id]);
 $comments = $statement->fetchAll();
 
+$statement = $db->prepare(
+    'SELECT image_id, image_path, image_caption
+     FROM images
+     WHERE recipe_id = :recipe_id
+     ORDER BY image_id ASC'
+);
+$statement->execute(['recipe_id' => $recipe_id]);
+$images = $statement->fetchAll();
+
 require 'header.php';
 ?>
 
@@ -73,6 +82,19 @@ require 'header.php';
     <p class="eyebrow"><?php echo e($recipe['lineage_name'] ?? 'Uncategorized'); ?></p>
     <h1><?php echo e($recipe['title']); ?></h1>
     <p>Introduced by <?php echo e($recipe['introduced_by']); ?></p>
+
+    <?php if ($images): ?>
+        <section class="recipe-image-gallery" aria-label="Recipe images">
+            <?php foreach ($images as $image): ?>
+                <figure>
+                    <img src="<?php echo e(application_url($image['image_path'])); ?>" alt="<?php echo e($image['image_caption'] ?: 'Photo of ' . $recipe['title']); ?>">
+                    <?php if ($image['image_caption']): ?>
+                        <figcaption><?php echo e($image['image_caption']); ?></figcaption>
+                    <?php endif; ?>
+                </figure>
+            <?php endforeach; ?>
+        </section>
+    <?php endif; ?>
 
     <div class="recipe-details">
         <section>

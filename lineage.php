@@ -19,7 +19,9 @@ if (!$lineage) {
 }
 
 $statement = $db->prepare(
-    'SELECT recipe_id, title, slug, introduced_by
+    'SELECT recipes.recipe_id, recipes.title, recipes.slug, recipes.introduced_by,
+            (SELECT image_path FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_path,
+            (SELECT image_caption FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_caption
      FROM recipes
      WHERE lineage_id = :lineage_id
      ORDER BY title ASC'
@@ -45,6 +47,9 @@ require 'header.php';
         <div class="recipe-grid row g-4">
             <?php foreach ($recipes as $recipe): ?>
                 <article class="recipe-card col-md-6 col-lg-4">
+                    <?php if ($recipe['image_path']): ?>
+                        <img class="recipe-card-image" src="<?php echo e(application_url($recipe['image_path'])); ?>" alt="<?php echo e($recipe['image_caption'] ?: 'Photo of ' . $recipe['title']); ?>">
+                    <?php endif; ?>
                     <h3><?php echo e($recipe['title']); ?></h3>
                     <p>Introduced by <?php echo e($recipe['introduced_by']); ?></p>
                     <a href="<?php echo e(recipe_permalink((int) $recipe['recipe_id'], $recipe['slug'])); ?>">Read recipe</a>

@@ -33,7 +33,9 @@ if ($search_term !== '') {
     $offset = ($current_page - 1) * $results_per_page;
     $sql =
         'SELECT recipes.recipe_id, recipes.title, recipes.slug, recipes.introduced_by,
-                lineages.lineage_name
+                lineages.lineage_name,
+                (SELECT image_path FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_path,
+                (SELECT image_caption FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_caption
          FROM recipes
          LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id' .
         $where_clause .
@@ -64,6 +66,9 @@ require 'header.php';
         <div class="recipe-grid row g-4">
             <?php foreach ($recipes as $recipe): ?>
                 <article class="recipe-card col-md-6 col-lg-4">
+                    <?php if ($recipe['image_path']): ?>
+                        <img class="recipe-card-image" src="<?php echo e(application_url($recipe['image_path'])); ?>" alt="<?php echo e($recipe['image_caption'] ?: 'Photo of ' . $recipe['title']); ?>">
+                    <?php endif; ?>
                     <p class="eyebrow"><?php echo e($recipe['lineage_name'] ?? 'Uncategorized'); ?></p>
                     <h2><?php echo e($recipe['title']); ?></h2>
                     <p>Introduced by <?php echo e($recipe['introduced_by']); ?></p>
