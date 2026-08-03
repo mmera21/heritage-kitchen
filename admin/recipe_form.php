@@ -17,7 +17,7 @@
 
     <label for="slug">URL slug *</label>
     <input id="slug" name="slug" type="text" value="<?php echo e($recipe['slug']); ?>" required>
-    <p>Use lowercase words separated by hyphens, for example: <em>pastel-de-choclo</em>.</p>
+    <p>Use a descriptive slug. Spaces are automatically converted to hyphens, for example: <em>pastel-de-choclo</em>.</p>
 
     <label for="lineage_id">Family lineage</label>
     <select id="lineage_id" name="lineage_id">

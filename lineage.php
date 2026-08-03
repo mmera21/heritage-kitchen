@@ -47,7 +47,7 @@ require 'header.php';
                 <article class="recipe-card col-md-6 col-lg-4">
                     <h3><?php echo e($recipe['title']); ?></h3>
                     <p>Introduced by <?php echo e($recipe['introduced_by']); ?></p>
-                    <a href="recipe.php?id=<?php echo $recipe['recipe_id']; ?>&slug=<?php echo e($recipe['slug']); ?>">Read recipe</a>
+                    <a href="<?php echo e(recipe_permalink((int) $recipe['recipe_id'], $recipe['slug'])); ?>">Read recipe</a>
                 </article>
             <?php endforeach; ?>
         </div>

@@ -9,7 +9,7 @@ $total_results = 0;
 $total_pages = 0;
 $current_page = valid_id($_GET['page'] ?? null) ?? 1;
 
-// Change this number during testing to demonstrate more or fewer results per page.
+// Meow : fopr demostrate the change pages
 $results_per_page = 5;
 
 if ($search_term !== '') {
@@ -67,7 +67,7 @@ require 'header.php';
                     <p class="eyebrow"><?php echo e($recipe['lineage_name'] ?? 'Uncategorized'); ?></p>
                     <h2><?php echo e($recipe['title']); ?></h2>
                     <p>Introduced by <?php echo e($recipe['introduced_by']); ?></p>
-                    <a href="recipe.php?id=<?php echo $recipe['recipe_id']; ?>&slug=<?php echo e($recipe['slug']); ?>">Read recipe</a>
+                    <a href="<?php echo e(recipe_permalink((int) $recipe['recipe_id'], $recipe['slug'])); ?>">Read recipe</a>
                 </article>
             <?php endforeach; ?>
         </div>

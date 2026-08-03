@@ -1,0 +1,7 @@
+Options -MultiViews
+RewriteEngine On
+
+# Recipe permalinks: /id/slug-text/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([1-9][0-9]*)/([a-z0-9]+(?:-[a-z0-9]+)*)/?$ recipe.php?id=$1&slug=$2 [L,QSA]

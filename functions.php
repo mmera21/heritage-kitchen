@@ -17,7 +17,7 @@ function recipe_input(array $source): array
     return [
         'lineage_id' => valid_id($source['lineage_id'] ?? null),
         'title' => trim(strip_tags($source['title'] ?? '')),
-        'slug' => trim(strip_tags($source['slug'] ?? '')),
+        'slug' => recipe_slug(trim(strip_tags($source['slug'] ?? ''))),
         'introduced_by' => trim(strip_tags($source['introduced_by'] ?? '')) ?: 'N/A',
         'ingredients' => trim(strip_tags($source['ingredients'] ?? '')),
         'instructions' => sanitize_rich_text($source['instructions'] ?? ''),
@@ -157,6 +157,13 @@ function recipe_slug(string $title): string
     $slug = preg_replace('/[^a-z0-9]+/i', '-', $slug);
 
     return trim($slug ?? '', '-');
+}
+
+function recipe_permalink(int $recipe_id, string $slug): string
+{
+    $application_path = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+
+    return $application_path . '/' . $recipe_id . '/' . rawurlencode($slug) . '/';
 }
 
 function lineage_input(array $source): array

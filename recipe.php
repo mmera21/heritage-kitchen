@@ -4,7 +4,7 @@ require 'connect.php';
 require 'functions.php';
 
 $recipe_id = valid_id($_GET['id'] ?? null);
-$slug = trim($_GET['slug'] ?? '');
+$slug = trim(strip_tags($_GET['slug'] ?? ''));
 
 if ($recipe_id === null || $slug === '') {
     http_response_code(404);
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         unset($_SESSION['captcha_code']);
 
-        header('Location: recipe.php?id=' . $recipe_id . '&slug=' . urlencode($recipe['slug']) . '&comment=posted');
+        header('Location: ' . recipe_permalink($recipe_id, $recipe['slug']) . '?comment=posted');
         exit;
     }
 }
