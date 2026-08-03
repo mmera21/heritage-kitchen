@@ -2,6 +2,7 @@
 require 'auth.php';
 require '../connect.php';
 require '../functions.php';
+require '../image_functions.php';
 
 $admin_page = true;
 $errors = [];
@@ -18,6 +19,9 @@ $recipe = [
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recipe = recipe_input($_POST);
+    $image_file = $_FILES['image_file'] ?? null;
+    $has_image_upload = $image_file && ($image_file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+    $image_caption = image_caption_input($_POST);
 
     if ($recipe['slug'] === '' && $recipe['title'] !== '') {
         $recipe['slug'] = recipe_slug($recipe['title']);
@@ -25,22 +29,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $errors = recipe_errors($recipe, $_POST);
 
+    if ($has_image_upload) {
+        $errors = array_merge($errors, image_upload_errors($image_file), image_caption_errors($image_caption));
+    }
+
     if (!$errors) {
+        $stored_image = null;
+
         try {
+            $db->beginTransaction();
             $statement = $db->prepare(
                 'INSERT INTO recipes (lineage_id, title, slug, introduced_by, ingredients, instructions, prep_time_minutes, servings)
                  VALUES (:lineage_id, :title, :slug, :introduced_by, :ingredients, :instructions, :prep_time_minutes, :servings)'
             );
             $statement->execute($recipe);
+            $recipe_id = (int) $db->lastInsertId();
+
+            if ($has_image_upload) {
+                $stored_image = store_resized_image($image_file, $recipe_id);
+                $statement = $db->prepare(
+                    'INSERT INTO images (recipe_id, image_name, image_path, image_caption)
+                     VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
+                );
+                $statement->execute([
+                    'recipe_id' => $recipe_id,
+                    'image_name' => $stored_image['image_name'],
+                    'image_path' => $stored_image['image_path'],
+                    'image_caption' => $image_caption ?: null,
+                ]);
+            }
+
+            $db->commit();
             header('Location: index.php?message=created');
             exit;
-        } catch (PDOException $error) {
-            $errors[] = 'The URL slug must be unique. Choose a different slug.';
+        } catch (Throwable $error) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            if ($stored_image !== null) {
+                delete_stored_image($stored_image);
+            }
+
+            $errors[] = $error instanceof PDOException
+                ? 'The URL slug must be unique. Choose a different slug.'
+                : 'The recipe could not be saved with that image. Please try again.';
         }
     }
 }
 
 $lineages = $db->query('SELECT lineage_id, lineage_name FROM lineages ORDER BY lineage_name')->fetchAll();
+$images = [];
 $submit_label = 'Save recipe';
 
 require '../header.php';

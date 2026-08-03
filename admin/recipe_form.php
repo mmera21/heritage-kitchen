@@ -11,7 +11,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 
-<form method="post" class="panel" id="recipe-form">
+<form method="post" class="panel" id="recipe-form" enctype="multipart/form-data">
     <label for="title">Recipe title *</label>
     <input id="title" name="title" type="text" value="<?php echo e($recipe['title']); ?>" required>
 
@@ -49,6 +49,34 @@
     <label for="instructions">Instructions *</label>
     <div id="instructions_editor" class="rich-editor"><?php echo rich_text_for_editor($recipe['instructions']); ?></div>
     <textarea id="instructions" name="instructions" hidden></textarea>
+
+    <fieldset class="image-upload-panel">
+        <legend>Recipe image <span class="field-optional">(optional)</span></legend>
+        <label for="image_file">Choose a JPEG, PNG, or WebP image</label>
+        <input id="image_file" name="image_file" type="file" accept="image/jpeg,image/png,image/webp">
+        <p class="form-help">Images must be smaller than 5 MB. PHP resizes large images to a maximum of 1200 pixels.</p>
+
+        <label for="image_caption">Image caption <span class="field-optional">(optional)</span></label>
+        <input id="image_caption" name="image_caption" type="text" maxlength="255" value="<?php echo e($image_caption ?? ''); ?>">
+
+        <?php if (!empty($images)): ?>
+            <div class="current-images">
+                <p><strong>Current image<?php echo count($images) > 1 ? 's' : ''; ?></strong></p>
+                <?php foreach ($images as $image): ?>
+                    <figure class="current-image-card">
+                        <img src="<?php echo e(application_url($image['image_path'])); ?>" alt="<?php echo e($image['image_caption'] ?: 'Current image for ' . $recipe['title']); ?>">
+                        <?php if ($image['image_caption']): ?>
+                            <figcaption><?php echo e($image['image_caption']); ?></figcaption>
+                        <?php endif; ?>
+                        <label>
+                            <input name="delete_image_ids[]" type="checkbox" value="<?php echo $image['image_id']; ?>">
+                            Remove this image
+                        </label>
+                    </figure>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </fieldset>
 
     <div class="admin-actions">
         <button class="button" type="submit"><?php echo e($submit_label); ?></button>

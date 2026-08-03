@@ -161,9 +161,18 @@ function recipe_slug(string $title): string
 
 function recipe_permalink(int $recipe_id, string $slug): string
 {
+    return application_url($recipe_id . '/' . rawurlencode($slug) . '/');
+}
+
+function application_url(string $path = ''): string
+{
     $application_path = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
 
-    return $application_path . '/' . $recipe_id . '/' . rawurlencode($slug) . '/';
+    if (preg_match('#/admin$#', $application_path)) {
+        $application_path = rtrim(str_replace('\\', '/', dirname($application_path)), '/');
+    }
+
+    return $application_path . '/' . ltrim($path, '/');
 }
 
 function lineage_input(array $source): array
