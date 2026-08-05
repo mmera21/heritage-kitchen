@@ -172,6 +172,8 @@ function application_url(string $path = ''): string
         $application_path = rtrim(str_replace('\\', '/', dirname($application_path)), '/');
     }
 
+    $application_path = str_replace(' ', '%20', $application_path);
+
     return $application_path . '/' . ltrim($path, '/');
 }
 

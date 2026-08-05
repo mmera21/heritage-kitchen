@@ -7,11 +7,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 
 $search_lineages = [];
 $selected_lineage_id = $selected_lineage_id ?? null;
-$application_base_url = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
-
-if (isset($admin_page)) {
-    $application_base_url = rtrim(str_replace('\\', '/', dirname($application_base_url)), '/');
-}
+$application_base_url = rtrim(application_url(), '/');
 
 if (isset($db) && $db instanceof PDO) {
     $search_lineages = $db->query('SELECT lineage_id, lineage_name FROM lineages ORDER BY lineage_name ASC')->fetchAll();
