@@ -32,7 +32,7 @@ function sanitize_rich_text(string $html): string
     $remove_entirely = ['script', 'style', 'iframe', 'object', 'embed'];
     $document = new DOMDocument('1.0', 'UTF-8');
     libxml_use_internal_errors(true);
-    $document->loadHTML('<div id="rich-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+    $document->loadHTML('<?xml encoding="UTF-8"><div id="rich-root">' . $html . '</div>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
     libxml_clear_errors();
 
     $root = $document->getElementById('rich-root');

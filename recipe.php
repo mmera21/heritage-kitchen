@@ -148,7 +148,7 @@ require 'header.php';
 
                 <label for="captcha_answer">Security check *</label>
                 <div class="captcha-row">
-                    <img src="captcha.php" alt="CAPTCHA security code" width="160" height="50">
+                    <img src="<?php echo e(application_url('captcha.php')); ?>" alt="CAPTCHA security code" width="160" height="50">
                     <input id="captcha_answer" name="captcha_answer" type="text" maxlength="6" autocomplete="off" required>
                 </div>
                 <p class="captcha-help">Type the characters shown in the image. This helps prevent spam.</p>
