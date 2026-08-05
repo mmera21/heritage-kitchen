@@ -5,6 +5,13 @@ function e(?string $value): string
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
 }
 
+function posted_trim(string $field): string
+{
+    $value = filter_input(INPUT_POST, $field, FILTER_UNSAFE_RAW);
+
+    return is_string($value) ? trim($value) : '';
+}
+
 function valid_id(mixed $value): ?int
 {
     $id = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);

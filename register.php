@@ -11,10 +11,18 @@ $user = ['username' => '', 'email' => '', 'role' => 'member'];
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $user = user_input($_POST);
-    $user['role'] = 'member';
-    $password = $_POST['password'] ?? '';
-    $password_confirm = $_POST['password_confirm'] ?? '';
+    $username = posted_trim('username');
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    $password = filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW);
+    $password_confirm = filter_input(INPUT_POST, 'password_confirm', FILTER_UNSAFE_RAW);
+
+    $user = user_input([
+        'username' => $username,
+        'email' => is_string($email) ? $email : '',
+        'role' => 'member',
+    ]);
+    $password = is_string($password) ? $password : '';
+    $password_confirm = is_string($password_confirm) ? $password_confirm : '';
     $errors = user_errors($user, $password, $password_confirm, true);
 
     if (!$errors) {
