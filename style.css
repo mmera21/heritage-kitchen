@@ -261,6 +261,9 @@ textarea { min-height: 130px; }
 .site-footer { 
     margin-top: 3rem; 
     padding: 1rem 0; }
+
+.site-footer p { margin: 0; }
+.image-credit { margin-top: .25rem; color: #675d56; font-size: .9rem; }
     
 @media (max-width: 1000px) {
     .nav {

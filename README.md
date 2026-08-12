@@ -64,3 +64,7 @@ escaping, validated upload types, and role checks for administration pages.
 Uploaded images and local secrets are excluded from version control by
 `.gitignore`.
 
+## Image Credits
+
+The recipe images used by The Heritage Kitchen were created with Google Gemini.
+
