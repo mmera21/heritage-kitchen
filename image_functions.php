@@ -110,6 +110,7 @@ function store_resized_image(array $file, int $recipe_id): array
     ];
 }
 
+// Delete only the stored file associated with the selected recipe image.
 function delete_stored_image(array $image): void
 {
     $filename = basename($image['image_path'] ?? '');
