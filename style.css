@@ -60,8 +60,8 @@ textarea:focus-visible {
 
 .brand img {
     display: block;
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     filter: brightness(0) invert(1);
     object-fit: contain;
 }
@@ -256,4 +256,4 @@ textarea { min-height: 130px; }
     margin-top: 3rem; 
     padding: 1rem 0; }
     
-@media (max-width: 600px) { .form-row, .sort-form { grid-template-columns: 1fr; } .section-heading, .nav { align-items:flex-start; flex-direction:column; padding: .8rem 0; } .brand img { width: 120px; height: 120px; } .site-search input { width: 100%; } table { font-size: .86rem; } }
+@media (max-width: 600px) { .form-row, .sort-form { grid-template-columns: 1fr; } .section-heading, .nav { align-items:flex-start; flex-direction:column; padding: .8rem 0; } .brand img { width: 140px; height: 140px; } .site-search input { width: 100%; } table { font-size: .86rem; } }
