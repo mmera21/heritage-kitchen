@@ -20,7 +20,7 @@ if (isset($db) && $db instanceof PDO) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Heritage Kitchen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="<?php echo e($application_base_url); ?>/style.css">
+    <link rel="stylesheet" href="<?php echo e($application_base_url); ?>/style.css?v=<?php echo filemtime(__DIR__ . '/style.css'); ?>">
 </head>
 <body>
     <header class="site-header">
