@@ -2,7 +2,7 @@
 
 const IMAGE_MAX_BYTES = 5_000_000;
 const IMAGE_MAX_DIMENSION = 1200;
-
+// Validate the uploaded file before attempting to resize or store it.
 function image_upload_errors(?array $file): array
 {
     if (!$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
