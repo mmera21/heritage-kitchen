@@ -1,7 +1,8 @@
 :root { 
     --ink: #2f2924; 
     --paper: #fffaf3; 
-    --accent: #9c4f2d; 
+    --accent: #87401f;
+    --focus: #176b87;
     --warm: #f2dfc9; }
 
 * {
@@ -16,6 +17,19 @@ body {
 
 a { 
     color: var(--accent); }
+
+a:hover {
+    color: #672f17;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
 
 .container { 
     width: min(1100px, 92%); 
@@ -192,7 +206,7 @@ label {
 input, select, textarea { 
     width: 100%; 
     padding: .55rem; 
-    border: 1px solid #bfae9e; 
+    border: 1px solid #77685d;
     border-radius: 4px; 
     font: inherit; }
 
