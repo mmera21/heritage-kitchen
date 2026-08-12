@@ -236,7 +236,7 @@ textarea { min-height: 130px; }
 .comment-card h3 { margin: 0; }
 .comment-date { margin: .15rem 0 .6rem; color: #675d56; font-size: .9rem; }
 .captcha-row { display: flex; align-items: center; gap: 1rem; }.captcha-row img { border: 1px solid #bfae9e; border-radius: 4px; }.captcha-row input { max-width: 180px; }.captcha-help { margin-top: .4rem; font-size: .9rem; }
-.pagination { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0; }.pagination a, .pagination span { min-width: 2.2rem; padding: .4rem .65rem; border: 1px solid #bfae9e; border-radius: 4px; text-align: center; text-decoration: none; }.pagination span { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pagination { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0; }.pagination a, .pagination span, nav.pagination a, nav.pagination span { min-width: 2.2rem; padding: .4rem .65rem; border: 1px solid #bfae9e; border-radius: 4px; color: #2f2924; text-align: center; text-decoration: none; }.pagination span, nav.pagination span { background: var(--warm); border-color: var(--accent); color: #2f2924; font-weight: bold; }
     
 .site-footer { 
     margin-top: 3rem; 
