@@ -25,7 +25,9 @@ if (isset($db) && $db instanceof PDO) {
 <body>
     <header class="site-header">
         <div class="container nav">
-            <a class="brand" href="<?php echo e($application_base_url); ?>/index.php">The Heritage Kitchen</a>
+            <a class="brand" href="<?php echo e($application_base_url); ?>/index.php" aria-label="The Heritage Kitchen — Home">
+                <img src="<?php echo e($application_base_url); ?>/assets/heritage-kitchen-logo.png" alt="The Heritage Kitchen">
+            </a>
             <nav class="navbar navbar-expand-lg p-0" aria-label="Main navigation">
                 <div class="navbar-nav">
                     <a class="nav-link px-2" href="<?php echo e($application_base_url); ?>/index.php">Recipes</a>
