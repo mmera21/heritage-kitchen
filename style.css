@@ -120,7 +120,7 @@ nav {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
-    margin: 0 0 1rem;
+    margin: 0 0 .35rem;
     border-radius: 5px;
     object-fit: cover;
 }
@@ -276,6 +276,13 @@ textarea { min-height: 130px; }
         width: 100%;
         justify-content: center;
     }
+}
+
+.gemini-image-credit {
+    margin: .35rem 0 1rem;
+    color: #675d56;
+    font-size: .82rem;
+    font-style: italic;
 }
 
 @media (max-width: 650px) {

@@ -68,6 +68,7 @@
                         <?php if ($image['image_caption']): ?>
                             <figcaption><?php echo e($image['image_caption']); ?></figcaption>
                         <?php endif; ?>
+                        <p class="gemini-image-credit">Image created with Google Gemini.</p>
                         <label>
                             <input name="delete_image_ids[]" type="checkbox" value="<?php echo $image['image_id']; ?>">
                             Remove this image

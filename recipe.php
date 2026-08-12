@@ -91,6 +91,7 @@ require 'header.php';
                     <?php if ($image['image_caption']): ?>
                         <figcaption><?php echo e($image['image_caption']); ?></figcaption>
                     <?php endif; ?>
+                    <p class="gemini-image-credit">Image created with Google Gemini.</p>
                 </figure>
             <?php endforeach; ?>
         </section>

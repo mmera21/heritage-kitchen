@@ -47,6 +47,7 @@ require 'header.php';
                 <article class="recipe-card col-md-6 col-lg-4">
                     <?php if ($recipe['image_path']): ?>
                         <img class="recipe-card-image" src="<?php echo e(application_url($recipe['image_path'])); ?>" alt="<?php echo e($recipe['image_caption'] ?: 'Photo of ' . $recipe['title']); ?>">
+                        <p class="gemini-image-credit">Image created with Google Gemini.</p>
                     <?php endif; ?>
                     <p class="eyebrow"><?php echo e($recipe['lineage_name'] ?? 'Uncategorized'); ?></p>
                     <h3><?php echo e($recipe['title']); ?></h3>
