@@ -37,6 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stored_image = null;
 
         try {
+            // Resize first so the database transaction stays short and active.
+            if ($has_image_upload) {
+                // A temporary ID is enough for the unique filename. The final
+                // recipe ID is still stored correctly in the database below.
+                $stored_image = store_resized_image($image_file, 0);
+            }
+
             $db->beginTransaction();
             $statement = $db->prepare(
                 'INSERT INTO recipes (lineage_id, title, slug, introduced_by, ingredients, instructions, prep_time_minutes, servings)
@@ -46,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $recipe_id = (int) $db->lastInsertId();
 
             if ($has_image_upload) {
-                $stored_image = store_resized_image($image_file, $recipe_id);
                 $statement = $db->prepare(
                     'INSERT INTO images (recipe_id, image_name, image_path, image_caption)
                      VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
@@ -64,11 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         } catch (Throwable $error) {
             if ($db->inTransaction()) {
-                $db->rollBack();
+                try {
+                    $db->rollBack();
+                } catch (PDOException $rollback_error) {
+                    // Keep the original error; the connection may already be gone.
+                }
             }
 
             if ($stored_image !== null) {
-                delete_stored_image($stored_image);
+                try {
+                    delete_stored_image($stored_image);
+                } catch (Throwable $cleanup_error) {
+                    // Do not hide the original save error with a cleanup error.
+                }
             }
 
             $errors[] = $error instanceof PDOException

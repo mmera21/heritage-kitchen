@@ -64,6 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stored_image = null;
 
         try {
+            // Image resizing can be slow. Do it before opening the database
+            // transaction so MySQL is not left idle while PHP processes it.
+            if ($has_image_upload) {
+                $stored_image = store_resized_image($image_file, $recipe_id);
+            }
+
             $db->beginTransaction();
             $recipe['recipe_id'] = $recipe_id;
             $statement = $db->prepare(
@@ -77,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $statement->execute($recipe);
 
             if ($has_image_upload) {
-                $stored_image = store_resized_image($image_file, $recipe_id);
                 $statement = $db->prepare(
                     'INSERT INTO images (recipe_id, image_name, image_path, image_caption)
                      VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
@@ -91,21 +96,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             foreach ($images_to_delete as $image) {
-                delete_stored_image($image);
                 $statement = $db->prepare('DELETE FROM images WHERE image_id = :image_id AND recipe_id = :recipe_id');
                 $statement->execute(['image_id' => $image['image_id'], 'recipe_id' => $recipe_id]);
             }
 
             $db->commit();
+
+            // Remove files only after their database records were committed.
+            foreach ($images_to_delete as $image) {
+                try {
+                    delete_stored_image($image);
+                } catch (Throwable $file_error) {
+                    // A leftover file is safer than failing an otherwise valid update.
+                }
+            }
+
             header('Location: index.php?message=updated');
             exit;
         } catch (Throwable $error) {
             if ($db->inTransaction()) {
-                $db->rollBack();
+                try {
+                    $db->rollBack();
+                } catch (PDOException $rollback_error) {
+                    // Keep the original error; the connection may already be gone.
+                }
             }
 
             if ($stored_image !== null) {
-                delete_stored_image($stored_image);
+                try {
+                    delete_stored_image($stored_image);
+                } catch (Throwable $cleanup_error) {
+                    // Do not hide the original update error with a cleanup error.
+                }
             }
 
             $errors[] = $error instanceof PDOException
