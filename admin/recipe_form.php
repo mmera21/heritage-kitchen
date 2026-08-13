@@ -8,7 +8,7 @@
         </ul>
     </div>
 <?php endif; ?>
-
+<!-- Referencia a los flacos de quilljs.com, los adoro muah muah-->
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
 
 <form method="post" class="panel" id="recipe-form" enctype="multipart/form-data">
@@ -49,7 +49,7 @@
     <label for="instructions">Instructions *</label>
     <div id="instructions_editor" class="rich-editor"><?php echo rich_text_for_editor($recipe['instructions']); ?></div>
     <textarea id="instructions" name="instructions" hidden></textarea>
-
+    <!-- MEOW : 6.1. Aqui te dice que solo podemos agregar JPEG, PNG o webp imagenes-->
     <fieldset class="image-upload-panel">
         <legend>Recipe image <span class="field-optional">(optional)</span></legend>
         <label for="image_file">Choose a JPEG, PNG, or WebP image</label>
@@ -68,8 +68,8 @@
                         <?php if ($image['image_caption']): ?>
                             <figcaption><?php echo e($image['image_caption']); ?></figcaption>
                         <?php endif; ?>
-                        <p class="gemini-image-credit">Image created with Google Gemini.</p>
                         <label>
+                            <!-- MEOW : 6.2. Aqui borramos la imagen id y lo hacemos con nla checkbox--> 
                             <input name="delete_image_ids[]" type="checkbox" value="<?php echo $image['image_id']; ?>">
                             Remove this image
                         </label>
@@ -84,7 +84,7 @@
         <a class="button secondary" href="index.php">Cancel</a>
     </div>
 </form>
-
+<!-- Los weones de reddit me dijeron que para el rich text editor use quill, asi que lo hice, nada mas JAJAJAJ -->
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script>
     const instructionsEditor = new Quill('#instructions_editor', {

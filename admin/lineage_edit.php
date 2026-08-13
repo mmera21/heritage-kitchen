@@ -29,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $lineage['lineage_id'] = $lineage_id;
             $statement = $db->prepare(
                 'UPDATE lineages
-                 SET lineage_name = :lineage_name, region = :region, description = :description
-                 WHERE lineage_id = :lineage_id'
+                SET lineage_name = :lineage_name, region = :region, description = :description
+                WHERE lineage_id = :lineage_id'
             );
             $statement->execute($lineage);
             header('Location: lineage_index.php');

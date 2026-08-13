@@ -1,4 +1,5 @@
 <?php if ($errors): ?>
+<!-- Principalmente como dice su nombre esto es para las lineages, mostrarlas y que se deberia saber sobre ellas cuando registras una nueva.-->
     <div class="error-list">
         <ul>
             <?php foreach ($errors as $error): ?>

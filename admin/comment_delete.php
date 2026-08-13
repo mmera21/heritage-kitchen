@@ -11,9 +11,9 @@ if ($comment_id === null) {
 
 $statement = $db->prepare(
     'SELECT comments.comment_id, comments.commenter_name, comments.comment_text, recipes.title
-     FROM comments
-     INNER JOIN recipes ON comments.recipe_id = recipes.recipe_id
-     WHERE comments.comment_id = :comment_id'
+    FROM comments
+    INNER JOIN recipes ON comments.recipe_id = recipes.recipe_id
+    WHERE comments.comment_id = :comment_id'
 );
 $statement->execute(['comment_id' => $comment_id]);
 $comment = $statement->fetch();

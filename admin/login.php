@@ -1,3 +1,5 @@
+<!--Ahi le meti caleta de errores, xauu-->
+
 <?php
 session_start();
 require '../connect.php';

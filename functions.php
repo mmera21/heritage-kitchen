@@ -1,5 +1,5 @@
 <?php
-
+// MEOW : Function e is for removed the weird text and validate strings, Before i u
 function e(?string $value): string
 {
     return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
@@ -11,14 +11,15 @@ function posted_trim(string $field): string
 
     return is_string($value) ? trim($value) : '';
 }
-
+// MEOW : 5.4. this one es tambien para el sglug, validamos en el textp con int y que no sea null o menor a uno.
 function valid_id(mixed $value): ?int
 {
     $id = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 
     return $id === false ? null : $id;
 }
-
+// MEOW : Validation security 4.1.
+// MEOW : Validation security 4.3. the strip_ tags is for clean. 
 function recipe_input(array $source): array
 {
     return [
@@ -32,7 +33,7 @@ function recipe_input(array $source): array
         'servings' => valid_id($source['servings'] ?? null),
     ];
 }
-
+// MEOW : Validation security 4.3. Rich-text instructions use a controlled HTML allowlist so safe formatting remains, when the unsafe text is removed deleted blabla. 
 function sanitize_rich_text(string $html): string
 {
     $allowed_tags = ['p', 'br', 'strong', 'em', 'u', 's', 'ul', 'ol', 'li', 'h2', 'h3', 'blockquote'];
@@ -157,7 +158,7 @@ function recipe_errors(array $recipe, array $source = []): array
 
     return $errors;
 }
-
+// MEOW : 5.4. lowercase slug spaces and punctuation, also The recipe query requires both the ID and slug to match.
 function recipe_slug(string $title): string
 {
     $slug = strtolower(trim($title));
@@ -165,7 +166,7 @@ function recipe_slug(string $title): string
 
     return trim($slug ?? '', '-');
 }
-
+// MEOW : 5.4. as well for the slug, show maryam. 
 function recipe_permalink(int $recipe_id, string $slug): string
 {
     return application_url($recipe_id . '/' . rawurlencode($slug) . '/');

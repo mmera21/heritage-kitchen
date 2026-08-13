@@ -7,10 +7,10 @@ $admin_page = true;
 $statement = $db->query(
     'SELECT lineages.lineage_id, lineages.lineage_name, lineages.region,
             COUNT(recipes.recipe_id) AS recipe_count
-     FROM lineages
-     LEFT JOIN recipes ON recipes.lineage_id = lineages.lineage_id
-     GROUP BY lineages.lineage_id, lineages.lineage_name, lineages.region
-     ORDER BY lineages.lineage_name ASC'
+    FROM lineages
+    LEFT JOIN recipes ON recipes.lineage_id = lineages.lineage_id
+    GROUP BY lineages.lineage_id, lineages.lineage_name, lineages.region
+    ORDER BY lineages.lineage_name ASC'
 );
 $lineages = $statement->fetchAll();
 

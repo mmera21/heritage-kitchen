@@ -26,9 +26,9 @@ $direction_label = $direction === 'asc' ? 'Ascending (A-Z / oldest first)' : 'De
 $statement = $db->query(
     'SELECT recipes.recipe_id, recipes.title, recipes.slug, recipes.created_at,
             recipes.updated_at, lineages.lineage_name
-     FROM recipes
-     LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
-     ORDER BY ' . $allowed_sorts[$sort]['sql'] . ' ' . strtoupper($direction)
+    FROM recipes
+    LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
+    ORDER BY ' . $allowed_sorts[$sort]['sql'] . ' ' . strtoupper($direction)
 );
 $recipes = $statement->fetchAll();
 

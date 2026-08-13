@@ -1,3 +1,5 @@
+<!-- New lineage-->
+
 <?php
 require 'auth.php';
 require '../connect.php';
@@ -15,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $statement = $db->prepare(
                 'INSERT INTO lineages (lineage_name, region, description)
-                 VALUES (:lineage_name, :region, :description)'
+                VALUES (:lineage_name, :region, :description)'
             );
             $statement->execute($lineage);
             header('Location: lineage_index.php');

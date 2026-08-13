@@ -1,41 +1,50 @@
 <?php
+// Carga la verificacion para que el usuario este autenticado. 
 require 'auth.php';
+//Carga la conexion de la base de datos 
 require '../connect.php';
+// Validacion, sanitizacion, slugs and hash, all the extra functions. 
 require '../functions.php';
+//este es como la carpeta de funciones pero dirigidas mas a las fotografias. 
 require '../image_functions.php';
 
+// Panel administracion.
 $admin_page = true;
+// Entero positivo y no null.
 $recipe_id = valid_id($_GET['id'] ?? null);
 
+// Si la id no funciona o no esta la url se detiene toda la wea.
 if ($recipe_id === null) {
     exit('Invalid recipe ID.');
 }
-
+// Hace la consulta con mysqlen busca de la receta. 
 $statement = $db->prepare('SELECT * FROM recipes WHERE recipe_id = :recipe_id');
 $statement->execute(['recipe_id' => $recipe_id]);
 $recipe = $statement->fetch();
-
+// Error, si no funciona, si no encuentra ni una receta con esas descripcion o id, detiene de nuevo la wea y muetsra el mensaje. 
 if (!$recipe) {
     exit('Recipe not found.');
 }
 
+// Consulta con mysql pero para obtener las imagenes correctas. 
 $image_statement = $db->prepare(
     'SELECT image_id, image_name, image_path, image_caption
-     FROM images
-     WHERE recipe_id = :recipe_id
-     ORDER BY image_id ASC'
+    FROM images
+    WHERE recipe_id = :recipe_id
+    ORDER BY image_id ASC'
 );
 $image_statement->execute(['recipe_id' => $recipe_id]);
 $images = $image_statement->fetchAll();
 
 $errors = [];
-
+// MEOW : Validation security 4.1.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recipe = recipe_input($_POST);
     $image_file = $_FILES['image_file'] ?? null;
     $has_image_upload = $image_file && ($image_file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
     $image_caption = image_caption_input($_POST);
     $delete_image_ids = [];
+    // MEOW : 6.2. Borramos foto y valida con cada id. 
 
     foreach ((array) ($_POST['delete_image_ids'] ?? []) as $image_id) {
         $valid_image_id = valid_id($image_id);
@@ -65,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             // Image resizing can be slow. Do it before opening the database
-            // transaction so MySQL is not left idle while PHP processes it.
             if ($has_image_upload) {
                 $stored_image = store_resized_image($image_file, $recipe_id);
             }
@@ -74,18 +82,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $recipe['recipe_id'] = $recipe_id;
             $statement = $db->prepare(
                 'UPDATE recipes
-                 SET lineage_id = :lineage_id, title = :title, slug = :slug,
-                     introduced_by = :introduced_by, ingredients = :ingredients,
-                     instructions = :instructions, prep_time_minutes = :prep_time_minutes,
-                     servings = :servings
-                 WHERE recipe_id = :recipe_id'
+                SET lineage_id = :lineage_id, title = :title, slug = :slug,
+                    introduced_by = :introduced_by, ingredients = :ingredients,
+                    instructions = :instructions, prep_time_minutes = :prep_time_minutes,
+                    servings = :servings
+                WHERE recipe_id = :recipe_id'
             );
             $statement->execute($recipe);
 
             if ($has_image_upload) {
                 $statement = $db->prepare(
                     'INSERT INTO images (recipe_id, image_name, image_path, image_caption)
-                     VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
+                    VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
                 );
                 $statement->execute([
                     'recipe_id' => $recipe_id,
@@ -94,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'image_caption' => $image_caption ?: null,
                 ]);
             }
-
+// MEOW : con sql borramos el path de la imagen. 
             foreach ($images_to_delete as $image) {
                 $statement = $db->prepare('DELETE FROM images WHERE image_id = :image_id AND recipe_id = :recipe_id');
                 $statement->execute(['image_id' => $image['image_id'], 'recipe_id' => $recipe_id]);
@@ -102,12 +110,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $db->commit();
 
-            // Remove files only after their database records were committed.
+            // Remove files with one condition. 
             foreach ($images_to_delete as $image) {
                 try {
                     delete_stored_image($image);
                 } catch (Throwable $file_error) {
-                    // A leftover file is safer than failing an otherwise valid update.
                 }
             }
 
@@ -118,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $db->rollBack();
                 } catch (PDOException $rollback_error) {
-                    // Keep the original error; the connection may already be gone.
                 }
             }
 
@@ -126,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     delete_stored_image($stored_image);
                 } catch (Throwable $cleanup_error) {
-                    // Do not hide the original update error with a cleanup error.
                 }
             }
 

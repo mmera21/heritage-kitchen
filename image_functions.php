@@ -2,7 +2,7 @@
 
 const IMAGE_MAX_BYTES = 5_000_000;
 const IMAGE_MAX_DIMENSION = 1200;
-// Validate the uploaded file before attempting to resize or store it.
+// MEOW : 6.1. function de imagen bien tosca, ademas si no subes una de las weas esas dejpeg o otras te sale un error. 
 function image_upload_errors(?array $file): array
 {
     if (!$file || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
@@ -44,7 +44,7 @@ function image_caption_errors(string $caption): array
 {
     return strlen($caption) > 255 ? ['The image caption must be 255 characters or fewer.'] : [];
 }
-
+// MEOW : 6.3. Resizing la imagen para que se vea maximo 1200px y que se guarde en la carpeta uploads.
 function store_resized_image(array $file, int $recipe_id): array
 {
     $image_info = getimagesize($file['tmp_name']);
@@ -73,7 +73,7 @@ function store_resized_image(array $file, int $recipe_id): array
         $transparent = imagecolorallocatealpha($target, 0, 0, 0, 127);
         imagefilledrectangle($target, 0, 0, $target_width, $target_height, $transparent);
     }
-
+// Aqui esta la exacta medidas y creo que arriba estaba el min
     imagecopyresampled($target, $source, 0, 0, 0, 0, $target_width, $target_height, $source_width, $source_height);
 
     $extension = match ($image_type) {
@@ -109,8 +109,7 @@ function store_resized_image(array $file, int $recipe_id): array
         'image_path' => 'uploads/' . $filename,
     ];
 }
-
-// Delete only the stored file associated with the selected recipe image.
+// MOEW : 6.2. imagen la borramos se la fodler 
 function delete_stored_image(array $image): void
 {
     $filename = basename($image['image_path'] ?? '');

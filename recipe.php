@@ -1,3 +1,5 @@
+<!-- A este punto ya me canse de dejar comentarios, quien vea esto, deje lagrimas y muchas, asi que si les sirve de algo adelante -->
+
 <?php
 session_start();
 require 'connect.php';
@@ -13,9 +15,9 @@ if ($recipe_id === null || $slug === '') {
 
 $statement = $db->prepare(
     'SELECT recipes.*, lineages.lineage_name
-     FROM recipes
-     LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
-     WHERE recipes.recipe_id = :recipe_id AND recipes.slug = :slug'
+    FROM recipes
+    LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
+    WHERE recipes.recipe_id = :recipe_id AND recipes.slug = :slug'
 );
 $statement->execute(['recipe_id' => $recipe_id, 'slug' => $slug]);
 $recipe = $statement->fetch();
@@ -41,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$comment_errors) {
         $statement = $db->prepare(
             'INSERT INTO comments (recipe_id, commenter_name, comment_text)
-             VALUES (:recipe_id, :commenter_name, :comment_text)'
+            VALUES (:recipe_id, :commenter_name, :comment_text)'
         );
         $statement->execute([
             'recipe_id' => $recipe_id,
@@ -59,18 +61,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $statement = $db->prepare(
     'SELECT commenter_name, comment_text, created_at
-     FROM comments
-     WHERE recipe_id = :recipe_id AND is_visible = 1
-     ORDER BY created_at DESC'
+    FROM comments
+    WHERE recipe_id = :recipe_id AND is_visible = 1
+    ORDER BY created_at DESC'
 );
 $statement->execute(['recipe_id' => $recipe_id]);
 $comments = $statement->fetchAll();
 
 $statement = $db->prepare(
     'SELECT image_id, image_path, image_caption
-     FROM images
-     WHERE recipe_id = :recipe_id
-     ORDER BY image_id ASC'
+    FROM images
+    WHERE recipe_id = :recipe_id
+    ORDER BY image_id ASC'
 );
 $statement->execute(['recipe_id' => $recipe_id]);
 $images = $statement->fetchAll();
@@ -91,7 +93,6 @@ require 'header.php';
                     <?php if ($image['image_caption']): ?>
                         <figcaption><?php echo e($image['image_caption']); ?></figcaption>
                     <?php endif; ?>
-                    <p class="gemini-image-credit">Image created with Google Gemini.</p>
                 </figure>
             <?php endforeach; ?>
         </section>

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $statement = $db->prepare(
                 'INSERT INTO users (username, email, password_hash, role)
-                 VALUES (:username, :email, :password_hash, :role)'
+                VALUES (:username, :email, :password_hash, :role)'
             );
             $statement->execute([
                 'username' => $user['username'],

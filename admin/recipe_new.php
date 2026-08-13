@@ -16,7 +16,8 @@ $recipe = [
     'prep_time_minutes' => '',
     'servings' => '',
 ];
-
+// MEOW : Validation security 4.1. 
+// MEOW : Tambien validacion de imagenes y te tira un erorr por aqui 6.1. 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $recipe = recipe_input($_POST);
     $image_file = $_FILES['image_file'] ?? null;
@@ -37,25 +38,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stored_image = null;
 
         try {
-            // Resize first so the database transaction stays short and active.
             if ($has_image_upload) {
-                // A temporary ID is enough for the unique filename. The final
-                // recipe ID is still stored correctly in the database below.
                 $stored_image = store_resized_image($image_file, 0);
             }
 
             $db->beginTransaction();
             $statement = $db->prepare(
                 'INSERT INTO recipes (lineage_id, title, slug, introduced_by, ingredients, instructions, prep_time_minutes, servings)
-                 VALUES (:lineage_id, :title, :slug, :introduced_by, :ingredients, :instructions, :prep_time_minutes, :servings)'
+                VALUES (:lineage_id, :title, :slug, :introduced_by, :ingredients, :instructions, :prep_time_minutes, :servings)'
             );
             $statement->execute($recipe);
             $recipe_id = (int) $db->lastInsertId();
-
+// MEOW : 6.1. Todas las weas de imagenes hace has aqui y el sttament de abajo. 
             if ($has_image_upload) {
                 $statement = $db->prepare(
                     'INSERT INTO images (recipe_id, image_name, image_path, image_caption)
-                     VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
+                    VALUES (:recipe_id, :image_name, :image_path, :image_caption)'
                 );
                 $statement->execute([
                     'recipe_id' => $recipe_id,
@@ -73,7 +71,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     $db->rollBack();
                 } catch (PDOException $rollback_error) {
-                    // Keep the original error; the connection may already be gone.
                 }
             }
 
@@ -81,7 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 try {
                     delete_stored_image($stored_image);
                 } catch (Throwable $cleanup_error) {
-                    // Do not hide the original save error with a cleanup error.
                 }
             }
 

@@ -6,9 +6,9 @@ $statement = $db->query(
             recipes.created_at, lineages.lineage_name,
             (SELECT image_path FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_path,
             (SELECT image_caption FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_caption
-     FROM recipes
-     LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
-     ORDER BY recipes.created_at DESC'
+    FROM recipes
+    LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id
+    ORDER BY recipes.created_at DESC'
 );
 $recipes = $statement->fetchAll();
 $lineages = $db->query('SELECT lineage_id, lineage_name FROM lineages ORDER BY lineage_name')->fetchAll();

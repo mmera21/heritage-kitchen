@@ -36,8 +36,8 @@ if ($search_term !== '') {
                 lineages.lineage_name,
                 (SELECT image_path FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_path,
                 (SELECT image_caption FROM images WHERE images.recipe_id = recipes.recipe_id ORDER BY image_id ASC LIMIT 1) AS image_caption
-         FROM recipes
-         LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id' .
+        FROM recipes
+        LEFT JOIN lineages ON recipes.lineage_id = lineages.lineage_id' .
         $where_clause .
         ' ORDER BY recipes.title ASC LIMIT ' . $results_per_page . ' OFFSET ' . $offset;
     $statement = $db->prepare($sql);
